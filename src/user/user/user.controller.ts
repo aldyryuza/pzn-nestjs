@@ -1,8 +1,17 @@
 import { Controller, Get, Header, HttpCode, HttpRedirectResponse, Param, Post, Query, Redirect, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { UserService } from './user.service';
 
 @Controller('/api/user')
 export class UserController {
+
+    constructor(private service: UserService) { };
+
+    @Get('/hello')
+    async sayHello(@Query('name') name: string): Promise<string> {
+        return this.service.sayhello(name);
+    }
+
     // START View ========================================
     @Get('/view/hello')
     viewHello(@Query('name') name: string, @Res() res: Response) {
@@ -26,7 +35,7 @@ export class UserController {
 
     @Get('/clear-cookie')
     clearCookie(@Res() res: Response) {
-        res.clearCookie('name'); 
+        res.clearCookie('name');
         res.send('Cookie berhasil dihapus!');
     };
 
@@ -48,15 +57,6 @@ export class UserController {
             statusCode: 302,
             url: 'api/user/sample-response',
         };
-
-    }
-
-    @Get('/hello')
-    sayHello(
-        @Query('first_name') firstName: string,
-        @Query('last_name') lastName: string
-    ): string {
-        return `Hello ${firstName} ${lastName}`;
 
     }
 
